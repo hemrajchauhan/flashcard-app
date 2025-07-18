@@ -26,6 +26,11 @@ public class StudyView {
     }
 
     public void show(Stage stage) {
+        // --- Set IDs for TestFX lookup ---
+        cardLabel.setId("flashcard-label");
+        nextButton.setId("next-card-btn");
+        progressBar.setId("progress-bar");
+
         cardLabel.setWrapText(true);
         cardLabel.setAlignment(Pos.CENTER);
         cardLabel.setTextFill(Color.web("#333"));
@@ -36,7 +41,6 @@ public class StudyView {
         cardLabel.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, new CornerRadii(24), new BorderWidths(2))));
         cardLabel.setEffect(new DropShadow(18, Color.rgb(55, 124, 246, 0.3)));
 
-        // Responsive font size: scales with card height
         cardLabel.styleProperty().bind(
             Bindings.concat("-fx-font-size: ", cardLabel.heightProperty().divide(7).asString(), "px; -fx-font-weight: bold;")
         );
