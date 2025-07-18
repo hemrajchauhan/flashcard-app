@@ -10,7 +10,7 @@ import java.util.concurrent.FutureTask;
 
 import static org.junit.Assert.*;
 
-public class TableSelectorDialogTestFX extends ApplicationTest {
+public class TableSelectorDialogTest extends ApplicationTest {
     @Override
     public void start(Stage stage) {}
 
