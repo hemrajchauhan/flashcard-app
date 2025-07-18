@@ -23,5 +23,16 @@ jobs:
         distribution: 'temurin'
         java-version: '24'
 
-    - name: Build with Maven
+    # Linux-specific steps
+    - name: Install Xvfb (Linux only)
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y xvfb
+
+    - name: Build and test with Maven under Xvfb (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" mvn -B clean verify
+
+    # Windows-specific steps
+    - name: Build and test with Maven (Windows)
+      if: matrix.os == 'windows-latest'
       run: mvn -B clean verify
