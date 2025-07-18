@@ -1,40 +1,53 @@
 package com.hemrajchauhan.flashcardapp;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.hemrajchauhan.flashcardapp.db.DatabaseManager;
+import com.hemrajchauhan.flashcardapp.model.Deck;
+import com.hemrajchauhan.flashcardapp.model.Flashcard;
+import com.hemrajchauhan.flashcardapp.ui.StudyView;
+import com.hemrajchauhan.flashcardapp.ui.TableSelectorDialog;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class App extends Application
 {
     @Override
     public void start(Stage primaryStage) {
-        // Left: Decks List
-        ListView<String> deckList = new ListView<>();
-        deckList.getItems().addAll("Default Deck"); // placeholder
+         // Choose DB file                  
+        DatabaseManager dbManager = new DatabaseManager("data/flashcards.db");
 
-        // Right: Flashcards List
-        ListView<String> flashcardList = new ListView<>();
-        flashcardList.getItems().addAll("Q: What is Java?\nA: A programming language."); // placeholder
+        // Get tables
+        List<String> tables = dbManager.getAllTables();
+        Optional<String> selectedTable = TableSelectorDialog.selectTable(tables);
+        if (selectedTable.isEmpty()) {
+            primaryStage.setScene(new Scene(new Label("No table selected. Exiting."), 300, 100));
+            primaryStage.show();
+            return;
+        }
 
-        // Top: Buttons
-        Button addDeckBtn = new Button("Add Deck");
-        Button addCardBtn = new Button("Add Flashcard");
+        // Get columns
+        List<String> columns = dbManager.getTableColumns(selectedTable.get());
+        Optional<String> frontCol = TableSelectorDialog.selectColumn(columns, "front");
+        Optional<String> backCol = TableSelectorDialog.selectColumn(columns, "back");
+        if (frontCol.isEmpty() || backCol.isEmpty()) {
+            primaryStage.setScene(new Scene(new Label("No columns selected. Exiting."), 300, 100));
+            primaryStage.show();
+            return;
+        }
 
-        HBox topBar = new HBox(10, addDeckBtn, addCardBtn);
+        // Fetch flashcards from database
+        List<Flashcard> cards = dbManager.fetchFlashcards(selectedTable.get(), frontCol.get(), backCol.get());
 
-        // Layout
-        BorderPane root = new BorderPane();
-        root.setLeft(deckList);
-        root.setCenter(flashcardList);
-        root.setTop(topBar);
+        // Create deck (you can name it the same as the table)
+        Deck deck = new Deck(selectedTable.get(), cards);
 
-        // Scene
-        Scene scene = new Scene(root, 600, 400);
-        primaryStage.setTitle("Flashcard App");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        // Launch Study Mode
+        new StudyView(deck).show(primaryStage);
     }
 
     public static void main( String[] args )
