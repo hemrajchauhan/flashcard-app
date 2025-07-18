@@ -7,9 +7,16 @@ public class Deck {
     private String name;
     private List<Flashcard> cards;
 
+    // Constructor: creates empty deck
     public Deck(String name){
         this.name = name;
         this.cards = new ArrayList<>();
+    }
+
+    // Constructor: loads deck with cards
+    public Deck(String name, List<Flashcard> cards){
+        this.name = name;
+        this.cards = new ArrayList<>(cards);
     }
 
     public String getName(){
