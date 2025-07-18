@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.hemrajchauhan.flashcardapp.db.DatabaseManager;
 import com.hemrajchauhan.flashcardapp.model.Deck;
 import com.hemrajchauhan.flashcardapp.model.Flashcard;
+import com.hemrajchauhan.flashcardapp.ui.StudyView;
 import com.hemrajchauhan.flashcardapp.ui.TableSelectorDialog;
 
 import javafx.application.Application;
@@ -45,19 +46,8 @@ public class App extends Application
         // Create deck (you can name it the same as the table)
         Deck deck = new Deck(selectedTable.get(), cards);
 
-        // For now, show number of cards and a sample
-        StringBuilder display = new StringBuilder("Deck: " + deck.getName() +
-                                "\nFlashcards loaded: " + deck.getCards().size());
-
-        if (!deck.getCards().isEmpty()) {
-            Flashcard first = deck.getCards().get(0);
-            display.append("\n\nSample:\n").append(first.getFront()).append(" / ").append(first.getBack());
-        }
-
-        // For now, just show what was picked
-        Label label = new Label(display.toString());
-        primaryStage.setScene(new Scene(label, 400, 250));
-        primaryStage.show();
+        // Launch Study Mode
+        new StudyView(deck).show(primaryStage);
     }
 
     public static void main( String[] args )

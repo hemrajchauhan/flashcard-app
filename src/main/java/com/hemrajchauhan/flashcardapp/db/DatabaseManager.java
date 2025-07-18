@@ -14,7 +14,7 @@ public class DatabaseManager {
 
     public List<String> getAllTables(){
         List<String> tables = new ArrayList<>();
-        String sql = "SELECT name FROM sqlite_master WHERE type='table'";
+        String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'";
         try (Connection conn = DriverManager.getConnection(dbUrl);
             Statement stmt  = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)){
